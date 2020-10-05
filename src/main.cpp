@@ -233,6 +233,7 @@ std::string process_string_template(std::string template_string)
 
     std::string project_name_sanitized(replace(replace(project_name, "_", ""), "-", ""));
 
+    template_string = replace_token(template_string, "project_namespace", m_ProjectNamespace);
     template_string = replace_token(template_string, "project_name", project_name);
     template_string = replace_token(template_string, "project_name_sanitized", project_name_sanitized);
     template_string = replace_token(template_string, "project_short_description", project_short_description);
