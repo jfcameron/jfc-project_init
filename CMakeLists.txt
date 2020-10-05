@@ -12,7 +12,7 @@ option(JFC_BUILD_TESTS "Build unit tests" OFF)
 add_subdirectory(thirdparty)
 
 jfc_project(executable
-    NAME "jfcprojectinit"
+    NAME "jfc-project_init"
     VERSION 0.0
     DESCRIPTION "sets up a new cpp project"
     C++_STANDARD 17
@@ -20,26 +20,21 @@ jfc_project(executable
 
     PUBLIC_INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-#        ${dependencyname_INCLUDE_DIRECTORIES} 
-
 
     PRIVATE_INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/include
 
-#    LIBRARIES
-#        ${dependencyname_LIBRARIES} 
-
     SOURCE_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
-
-#    DEPENDENCIES
-#        "dependencyname"
 )
 
-if (JFC_BUILD_TESTS)
-    add_subdirectory(test)
-endif()
+target_link_libraries(${PROJECT_NAME} stdc++fs)
 
-if (JFC_BUILD_DOCS)
-    add_subdirectory(docs)
-endif()
+#if (JFC_BUILD_TESTS)
+#    add_subdirectory(test)
+#endif()
+#
+#if (JFC_BUILD_DOCS)
+#    add_subdirectory(docs)
+#endif()
+
