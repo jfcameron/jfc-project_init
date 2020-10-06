@@ -660,79 +660,96 @@ public:
 
 int main(int count, char **args)
 {
-    if (count != 5) throw std::invalid_argument("needs 4 parameters: "
-        "1: namespace "
-        "2: project name "
-        "3: single sentence description"
-        "4: lib/exe");
+    try
+    {
+        if (count != 5) throw std::invalid_argument("needs 4 parameters: "
+                "1: namespace, "
+                "2: project name, "
+                "3: single sentence description, "
+                "4: [lib|exe]");
 
-    std::string project_namespace(args[1]);
-    std::string project_name(project_namespace + "-" + std::string(args[2]));
-    std::string project_description(args[3]);
-   
-	std::string project_type_raw(args[4]);
+        std::string project_namespace(args[1]);
+        std::string project_name(project_namespace + "-" + std::string(args[2]));
+        std::string project_description(args[3]);
 
-	project_type type;
+        if (project_description.size() > 40) throw std::invalid_argument("description too long");
 
-	if (project_type_raw == "lib") type = project_type::library;
-	else if (project_type_raw == "exe") type = project_type::executable;
-	else throw std::invalid_argument("type must be lib or exe");
+        std::string project_type_raw(args[4]);
 
-    writer w(project_name, project_namespace);
-    file_contents c(type, project_namespace, project_name, project_description);
-  
-    w.run_command({}, "git init");
-    
-    //populate root
-    w.create_file({}, ".gitattributes", c.git_attributes);
-    w.create_file({}, ".gitignore", c.git_ignore);
-    w.create_file({}, ".travis.yml", c.travis);
-    w.create_file({}, "CMakeLists.txt", c.cmakelists_root);
-    w.create_file({}, "LICENSE", c.license);
-    w.create_file({}, "README.md", c.readme);
-   
-    //populate cmake
-    w.run_command({"cmake"}, "git submodule add https://github.com/jfcameron/jfc-cmake.git");
-   
-	if (type == project_type::library)
-	{
-		//populate demo
-		w.create_file({ "demo" }, "CMakeLists.txt", c.cmake_demo);
-		w.create_file({ "demo" }, "main.cpp", c.demo);
-	}
+        project_type type;
 
-    //populate docs
-    w.create_file({"docs"}, "CMakeLists.txt", c.cmake_docs);
-    
-    w.create_file({"docs"}, "icon.png", std::vector<unsigned char>(icon_png, icon_png + sizeof(icon_png) / sizeof(icon_png[0])));
+        if (project_type_raw == "lib") type = project_type::library;
+        else if (project_type_raw == "exe") type = project_type::executable;
+        else throw std::invalid_argument("type must be lib or exe");
 
-    //populate include
-    w.create_file({"include", project_namespace}, ".keep", "");
+        writer w(project_name, project_namespace);
+        file_contents c(type, project_namespace, project_name, project_description);
 
-    //populate src
-    w.create_file({"src", "include", project_namespace}, ".keep", "");
+        w.run_command({}, "git init");
 
-	if (type == project_type::library)
-	{
-		w.create_file({ "src" }, "stub.cpp", "");
-	}
-	else if (type == project_type::executable)
-	{
-		w.create_file({ "src" }, "main.cpp", c.demo);
-	}
+        //populate root
+        w.create_file({}, ".gitattributes", c.git_attributes);
+        w.create_file({}, ".gitignore", c.git_ignore);
+        w.create_file({}, ".travis.yml", c.travis);
+        w.create_file({}, "CMakeLists.txt", c.cmakelists_root);
+        w.create_file({}, "LICENSE", c.license);
+        w.create_file({}, "README.md", c.readme);
 
-    //populate test
-    w.create_file({"test"}, "CMakeLists.txt", c.cmake_test);
-    w.create_file({"test"}, "example_test.cpp", c.test);
-    
-    //pop thirdparty
-    w.create_file({"thirdparty"}, "CMakeLists.txt", c.cmake_thirdparty);
+        //populate cmake
+        w.run_command({"cmake"}, "git submodule add https://github.com/jfcameron/jfc-cmake.git");
 
-    //populate workspace
-    w.create_file({"workspace"}, ".keep", "");
-    
-    w.run_command({}, "git add --all");
-    w.run_command({}, "git commit -m \"initial commit\"");
+        if (type == project_type::library)
+        {
+            //populate demo
+            w.create_file({ "demo" }, "CMakeLists.txt", c.cmake_demo);
+            w.create_file({ "demo" }, "main.cpp", c.demo);
+        }
+
+        //populate docs
+        w.create_file({"docs"}, "CMakeLists.txt", c.cmake_docs);
+
+        w.create_file({"docs"}, "icon.png", std::vector<unsigned char>(icon_png, icon_png + sizeof(icon_png) / sizeof(icon_png[0])));
+
+        //populate include
+        w.create_file({"include", project_namespace}, ".keep", "");
+
+        //populate src
+        w.create_file({"src", "include", project_namespace}, ".keep", "");
+
+        if (type == project_type::library)
+        {
+            w.create_file({ "src" }, "stub.cpp", "");
+        }
+        else if (type == project_type::executable)
+        {
+            w.create_file({ "src" }, "main.cpp", c.demo);
+        }
+
+        //populate test
+        w.create_file({"test"}, "CMakeLists.txt", c.cmake_test);
+        w.create_file({"test"}, "example_test.cpp", c.test);
+
+        //pop thirdparty
+        w.create_file({"thirdparty"}, "CMakeLists.txt", c.cmake_thirdparty);
+
+        //populate workspace
+        w.create_file({"workspace"}, ".keep", "");
+
+        w.run_command({}, "git add --all");
+        w.run_command({}, "git commit -m \"initial commit\"");
+    }
+    catch (const std::runtime_error &e)
+    {
+        std::cerr << "error: " << e.what() << std::endl;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "error: " << e.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "catastrophic error" << std::endl;
+    }
 
     return EXIT_SUCCESS;
 }
