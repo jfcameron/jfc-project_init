@@ -18,7 +18,6 @@ matrix:
           packages:
             - cmake
             - git
-            - gcc-8.2
       script:
         - |
           cd workspace
