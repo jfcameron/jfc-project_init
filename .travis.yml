@@ -10,7 +10,7 @@ matrix:
     # Build scripts
     - os: linux
       name: build linux gcc
-      compiler: gcc
+      compiler: gcc-8
       addons:
         apt:
           sources:
