@@ -22,8 +22,6 @@ matrix:
             - g++-8
       script:
         - |
-          sudo ln -s /usr/bin/gcc-8 /usr/local/bin/gcc
-          sudo ln -s /usr/bin/g++-8 /usr/local/bin/g++
           export CC=/usr/bin/gcc-8
           export CXX=/usr/bin/g++-8
           cd workspace
