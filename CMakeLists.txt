@@ -28,7 +28,9 @@ jfc_project(executable
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} stdc++fs)
+if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    target_link_libraries(${PROJECT_NAME} stdc++fs)
+endif(()
 
 #if (JFC_BUILD_TESTS)
 #    add_subdirectory(test)
