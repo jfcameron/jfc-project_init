@@ -309,6 +309,10 @@ matrix:
       name: build macos clang
       osx_image: xcode12.2
       compiler: clang
+#      addons:
+#        homebrew:
+#          packages:
+#            - gtk+
       script:
         - |
           cd workspace
