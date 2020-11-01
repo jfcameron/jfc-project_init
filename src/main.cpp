@@ -307,7 +307,7 @@ matrix:
 
     - os: osx
       name: build macos clang
-      osx_image: xcode11.2
+      osx_image: xcode12.2
       compiler: clang
       script:
         - |
