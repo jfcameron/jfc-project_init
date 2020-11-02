@@ -417,6 +417,9 @@ jfc_project(library
     SOURCE_LIST
         ${CMAKE_CURRENT_SOURCE_DIR}/src/stub.cpp
 
+#    LIBRARIES
+#       ${dependencyname_LIBRARIES} 
+
 #    DEPENDENCIES
 #        "example"
 )
