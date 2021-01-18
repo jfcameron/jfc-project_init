@@ -12,7 +12,7 @@ option(JFC_BUILD_TESTS "Build unit tests" OFF)
 add_subdirectory(thirdparty)
 
 jfc_project(executable
-    NAME "jfc-project_init"
+    NAME "jfc_project_init"
     VERSION 0.0
     DESCRIPTION "sets up a new cpp project"
     C++_STANDARD 17
