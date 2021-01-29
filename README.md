@@ -2,4 +2,5 @@
 
 ## jfc-project_init
 
-sets up a new cpp project
+sets up a new cpp project in the style of the c++ projects found on my github account.
+Technologies used by the generated project: git, cmake, doxygen, travis-ci (free build service for open-source projects).
