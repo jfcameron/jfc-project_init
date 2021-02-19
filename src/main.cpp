@@ -553,7 +553,7 @@ const std::string demo = (process_string_template(R"V0G0N(// © {{year}} Joseph 
 
 #include <cstdlib>
 
-int main(int count, char **args)
+int main(int argc, char *argv[])
 {
     return EXIT_SUCCESS;
 }
