@@ -330,7 +330,7 @@ matrix:
         - |
           cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF #-DCMAKE_CXX_FLAGS=" /W4 /EHsc /WX /std:c++17 /permissive-"
-          cmake --build .
+          cmake --build . --config Release
 
 #    - os: windows
 #      name: build windows mingw
