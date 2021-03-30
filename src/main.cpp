@@ -286,7 +286,7 @@ matrix:
         - |
           cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Wall -Wextra -Ofast -flto -funroll-loops -m64 -march=native"
-          make
+          cmake --build .
           ctest --extra-verbose
 
     - os: linux
@@ -305,7 +305,7 @@ matrix:
         - |
           cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Wall -Wextra -Ofast -flto -funroll-loops -m64 -march=native"
-          make
+          cmake --build .
           ctest --extra-verbose
 
     - os: osx
@@ -320,7 +320,7 @@ matrix:
         - |
           cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Weverything -Wno-c++98-compat -Wno-padded -Ofast -flto -funroll-loops -m64 -march=native -std=c++17 -stdlib=libc++"
-          make
+          cmake --build .
           ctest --extra-verbose
 
     - os: windows
@@ -340,7 +340,7 @@ matrix:
 #        - |
 #          cd workspace
 #          cmake .. -G "MinGW Makefiles" -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Wall -Wextra -Ofast -flto -funroll-loops -m64 -march=native"
-#          cmake --build .
+#          cmake --build . --config Release
 
 #    # Documentation 
 #    - os: linux
