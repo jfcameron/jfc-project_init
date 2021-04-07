@@ -1,14 +1,13 @@
+#include <chrono>
 #include <cstdlib>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <chrono>
-#include <ctime>
 
-//#include <wanikani_reviews_icon/buildinfo.h>
 #include <jfc_project_init/buildinfo.h>
 
 enum class project_type
@@ -284,7 +283,6 @@ matrix:
             - git
       script:
         - |
-          cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Wall -Wextra -Ofast -flto -funroll-loops -m64 -march=native"
           cmake --build .
           ctest --extra-verbose
@@ -303,7 +301,6 @@ matrix:
             - git
       script:
         - |
-          cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Wall -Wextra -Ofast -flto -funroll-loops -m64 -march=native"
           cmake --build .
           ctest --extra-verbose
@@ -318,7 +315,6 @@ matrix:
 #            - gtk+
       script:
         - |
-          cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Weverything -Wno-c++98-compat -Wno-padded -Ofast -flto -funroll-loops -m64 -march=native -std=c++17 -stdlib=libc++"
           cmake --build .
           ctest --extra-verbose
@@ -328,7 +324,6 @@ matrix:
       compiler: MSVC
       script: 
         - |
-          cd workspace
           cmake .. -DJFC_BUILD_DOCS=OFF #-DCMAKE_CXX_FLAGS=" /W4 /EHsc /WX /std:c++17 /permissive-"
           cmake --build . --config Release
 
@@ -338,9 +333,34 @@ matrix:
 #      install: choco install mingw
 #      script: 
 #        - |
-#          cd workspace
 #          cmake .. -G "MinGW Makefiles" -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-pedantic -Wall -Wextra -Ofast -flto -funroll-loops -m64 -march=native"
 #          cmake --build . --config Release
+
+#    - os: linux
+#      name: build wasm using emscripten
+#      compiler: gcc
+#      addons:
+#        apt:
+#          sources:
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - cmake
+#            - git
+#            - python2.7
+#            - default-jre
+#      script:
+#        - |
+#          git clone https://github.com/emscripten-core/emsdk.git ~/emsdk
+#          pushd ~/emsdk
+#          git pull
+#          ./emsdk install latest
+#          ./emsdk activate latest
+#          source ./emsdk_env.sh
+#          git clone https://github.com/emscripten-core/emscripten.git ~/emscripten
+#          popd
+#          cd workspace
+#          cmake .. -G "Unix Makefiles" -DJFC_BUILD_DOCS=OFF -DJFC_BUILD_DEMO=ON -DJFC_BUILD_TESTS=OFF -DCMAKE_CXX_FLAGS="-s USE_GLFW=3" -DCMAKE_TOOLCHAIN_FILE="~/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+#          cmake --build .
 
 #    # Documentation 
 #    - os: linux
@@ -353,7 +373,6 @@ matrix:
 #            - doxygen
 #      script:
 #        - |
-#          cd workspace;git submodule update --init --recursive
 #          cmake .. -DJFC_BUILD_DEMO=OFF -DJFC_BUILD_DOCS=ON -DJFC_BUILD_TESTS=OFF
 #          mv docs ~
 #          REMOTE_URL=$(git config --get remote.origin.url | sed -e "s/^https:\/\///")
@@ -373,7 +392,6 @@ matrix:
 #      before_install: pip install --user cpp-coveralls
 #      script:
 #        - |
-#          cd workspace
 #          cmake .. -DJFC_BUILD_DOCS=OFF -DCMAKE_CXX_FLAGS="-g -O0 -Wall -fprofile-arcs -ftest-coverage"
 #          make
 #          make test
@@ -385,6 +403,8 @@ matrix:
 before_script: 
   - |
     CURRENT_COMMIT_HASH="$(git rev-parse HEAD)"
+    cd workspace
+    git submodule update --init --recursive
 )V0G0N"));
 
 //TODO: parameterize proejct name, date, etc.
@@ -708,7 +728,6 @@ int main(int count, char **argv)
                 "4: [lib|exe]");
         else
         {
-
             std::string project_namespace(argv[1]);
             std::string project_name(project_namespace + "-" + std::string(argv[2]));
             std::string project_description(argv[3]);
@@ -778,6 +797,14 @@ int main(int count, char **argv)
 
             w.run_command({}, "git add --all");
             w.run_command({}, "git commit -m \"initial commit\"");
+
+            //create gh-pages
+            w.run_command({}, "git checkout --orphan gh-pages");
+            w.run_command({}, "git reset --hard");
+            w.create_file({}, ".keep", "");
+            w.run_command({}, "git add .keep");
+            w.run_command({}, "git commit -m \"initial gh-pages commit\"");
+            w.run_command({}, "git checkout master");
         }
     }
     catch (const std::runtime_error &e)
